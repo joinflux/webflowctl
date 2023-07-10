@@ -6,13 +6,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-
+// ApiToken is the Webflow API Token
+var ApiToken string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "webflowctl",
 	Short: "A command line tool to interact with the Webflow API",
-	Long: `A tool to help manage webhooks in the Webflow API`,
+	Long:  `A tool to help manage webhooks in the Webflow API`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -25,15 +26,6 @@ func Execute() {
 }
 
 func init() {
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.webflowctl.git.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.PersistentFlags().StringVarP(&ApiToken, "api-token", "a", "", "Webflow API Token")
+  rootCmd.MarkPersistentFlagRequired("api-token")
 }
-
-

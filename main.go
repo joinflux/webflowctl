@@ -1,6 +1,6 @@
 package main
 
-import "github.com/joinflux/webflowctl.git/cmd"
+import "github.com/joinflux/webflowctl/cmd"
 
 func main() {
 	cmd.Execute()

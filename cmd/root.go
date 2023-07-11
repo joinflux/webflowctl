@@ -9,6 +9,17 @@ import (
 // ApiToken is the Webflow API Token
 var ApiToken string
 
+// Webhook represents a webhook in Webflow
+type Webhook struct {
+	CreatedOn   string
+	Id          string `json:"_id"`
+	LastUsed    string
+	Site        string
+	TriggerId   string
+	TriggerType string
+	Url         string
+}
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "webflowctl",
@@ -27,5 +38,5 @@ func Execute() {
 
 func init() {
 	rootCmd.PersistentFlags().StringVarP(&ApiToken, "api-token", "a", "", "Webflow API Token")
-  rootCmd.MarkPersistentFlagRequired("api-token")
+	rootCmd.MarkPersistentFlagRequired("api-token")
 }

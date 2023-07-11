@@ -11,17 +11,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Webhook represents a webhook in Webflow
-type Webhook struct {
-	CreatedOn   string
-	Id          string `json:"_id"`
-	LastUsed    string
-	Site        string
-	TriggerId   string
-	TriggerType string
-	Url         string
-}
-
 // ListResponse represents a response to the list request in Webflow.
 // See: https://developers.webflow.com/reference/list-webhooks.
 type ListResponse []Webhook

@@ -2,6 +2,10 @@
 
 Webflowctl is a command line utility to manage Webflow site configurations. It is being used specifically to manage webhooks.
 
+## Installation
+
+Download a binary from the [Release](https://github.com/joinflux/webflowctl/releases) page.
+
 ## Usage
 
 ```

@@ -3,12 +3,10 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
-	"net/http"
-	"os"
 	"strings"
 
+	"github.com/joinflux/webflowctl/internal"
 	"github.com/spf13/cobra"
 )
 
@@ -45,40 +43,14 @@ var createCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
 		siteId := args[0]
-		client := &http.Client{}
+		c := internal.NewClient(ApiToken)
 
-		payloadString := fmt.Sprintf(`{
+		payload := strings.NewReader(fmt.Sprintf(`{
         "triggerType": "%s",
         "url": "%s"
-    }`, args[1], args[2])
-		payload := strings.NewReader(payloadString)
+    }`, args[1], args[2]))
 
-		url := fmt.Sprintf("https://api.webflow.com/sites/%s/webhooks", siteId)
-		request, err := http.NewRequest("POST", url, payload)
-		if err != nil {
-			log.Fatalf("Failed to create request: %v", err)
-		}
-
-		request.Header.Add("authorization", "Bearer "+ApiToken)
-		request.Header.Add("accept", "application/json")
-		request.Header.Add("content-type", "application/json")
-
-		resp, err := client.Do(request)
-		if err != nil {
-			log.Fatalf("Error sending request: %v", err)
-		}
-
-		body, err := ioutil.ReadAll(resp.Body)
-		defer resp.Body.Close()
-		if err != nil {
-			log.Fatalf("Error reading response payload: %v", err)
-		}
-
-		if resp.StatusCode != http.StatusOK {
-			log.Printf("Failed to create webhook: (%s)\n", resp.Status)
-			log.Println(string(body))
-			os.Exit(1)
-		}
+		body, err := c.Post([]string{"sites", siteId, "webhooks"}, payload)
 
 		var response CreateResponse
 		err = json.Unmarshal(body, &response)

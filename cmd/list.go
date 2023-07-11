@@ -3,11 +3,9 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
-	"net/http"
-	"os"
 
+	"github.com/joinflux/webflowctl/internal"
 	"github.com/spf13/cobra"
 )
 
@@ -22,33 +20,9 @@ var listCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		siteId := args[0]
-		client := &http.Client{}
 
-		url := fmt.Sprintf("https://api.webflow.com/sites/%s/webhooks", siteId)
-		request, err := http.NewRequest("GET", url, nil)
-		if err != nil {
-			log.Fatalf("Failed to create request: %v", err)
-		}
-
-		request.Header.Add("authorization", "Bearer "+ApiToken)
-		request.Header.Add("accept", "application/json")
-
-		resp, err := client.Do(request)
-		if err != nil {
-			log.Fatalf("Error sending request: %v", err)
-		}
-
-		body, err := ioutil.ReadAll(resp.Body)
-		defer resp.Body.Close()
-		if err != nil {
-			log.Fatalf("Error reading response payload: %v", err)
-		}
-
-		if resp.StatusCode != http.StatusOK {
-			log.Printf("Failed to list webhooks: %s\n", resp.Status)
-			log.Println(string(body))
-			os.Exit(1)
-		}
+		c := internal.NewClient(ApiToken)
+		body, err := c.Get([]string{"sites", siteId, "webhooks"})
 
 		var response ListResponse
 		err = json.Unmarshal(body, &response)

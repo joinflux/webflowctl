@@ -12,8 +12,9 @@ import (
 )
 
 func init() {
-	sitesCmd.AddCommand(listSitesCmd)
 	sitesCmd.AddCommand(getSitesCmd)
+	sitesCmd.AddCommand(listSitesCmd)
+	sitesCmd.AddCommand(publishSitesCmd)
 	rootCmd.AddCommand(sitesCmd)
 }
 
@@ -85,5 +86,32 @@ var getSitesCmd = &cobra.Command{
 		fmt.Fprintf(w, "short name:\t%s\n", response.ShortName)
 		fmt.Fprintf(w, "timezone:\t%s\n", response.Timezone)
 		w.Flush()
+	},
+}
+
+// PublishSiteResponse represents a response to the publish site request in Webflow.
+// See: https://developers.webflow.com/reference/publish-site
+type PublishSiteResponse struct {
+	Queued bool
+}
+
+// publishSitesCmd represents the command to get a site in Webflow.
+var publishSitesCmd = &cobra.Command{
+	Use:   "publish [site_id]",
+	Short: "publish a site",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		siteId := args[0]
+		c := internal.NewClient(ApiToken)
+		body, err := c.Get([]string{"sites", siteId, "publish"})
+		if err != nil {
+			log.Fatalf("Request failed: %v", err)
+		}
+
+		var response PublishSiteResponse
+		err = json.Unmarshal(body, &response)
+		if err != nil {
+			log.Fatalf("Failed to unmarshal response body: %v", err)
+		}
 	},
 }

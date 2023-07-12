@@ -105,6 +105,9 @@ var createWebhooksCmd = &cobra.Command{
     }`, triggerType, url))
 
 		body, err := c.Post([]string{"sites", siteId, "webhooks"}, payload)
+		if err != nil {
+			log.Fatalf("Request failed: %v", err)
+		}
 
 		var response CreateWebhooksResponse
 		err = json.Unmarshal(body, &response)
@@ -129,6 +132,9 @@ var listWebhooksCmd = &cobra.Command{
 
 		c := internal.NewClient(ApiToken)
 		body, err := c.Get([]string{"sites", siteId, "webhooks"})
+		if err != nil {
+			log.Fatalf("Request failed: %v", err)
+		}
 
 		var response ListWebhooksResponse
 		err = json.Unmarshal(body, &response)
@@ -179,6 +185,9 @@ var getWebhooksCmd = &cobra.Command{
 
 		client := internal.NewClient(ApiToken)
 		body, err := client.Get([]string{"sites", siteId, "webhooks", webhookId})
+		if err != nil {
+			log.Fatalf("Request failed: %v", err)
+		}
 
 		var response GetWebhooksResponse
 		err = json.Unmarshal(body, &response)

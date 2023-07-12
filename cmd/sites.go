@@ -46,6 +46,9 @@ var listSitesCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		c := internal.NewClient(ApiToken)
 		body, err := c.Get([]string{"sites"})
+		if err != nil {
+			log.Fatalf("Request failed: %v", err)
+		}
 
 		var response ListSitesResponse
 		err = json.Unmarshal(body, &response)
@@ -71,6 +74,9 @@ var getSitesCmd = &cobra.Command{
 		siteId := args[0]
 		c := internal.NewClient(ApiToken)
 		body, err := c.Get([]string{"sites", siteId})
+		if err != nil {
+			log.Fatalf("Request failed: %v", err)
+		}
 
 		var response GetSitesResponse
 		err = json.Unmarshal(body, &response)

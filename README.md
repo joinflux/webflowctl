@@ -27,6 +27,8 @@ Flags:
 Use "webflowctl [command] --help" for more information about a command.
 ```
 
+> Tip: set `WEBFLOW_API_TOKEN` environment variable to bypass needing to fill in the `--api-token` flag.
+
 ## Available Commands
 
 - [x] List webhooks

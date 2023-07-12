@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -25,6 +26,17 @@ var rootCmd = &cobra.Command{
 	Use:   "webflowctl",
 	Short: "A command line tool to interact with the Webflow API",
 	Long:  `A tool to help manage webhooks in the Webflow API`,
+	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		flagValue, _ := cmd.PersistentFlags().GetString("api-token")
+		if flagValue == "" {
+			envValue := os.Getenv("WEBFLOW_API_TOKEN")
+			if envValue == "" {
+				return fmt.Errorf("Missing API Token: --api-token (-a) [WEBFLOW_API_TOKEN]")
+			}
+			ApiToken = envValue
+		}
+		return nil
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -38,5 +50,4 @@ func Execute() {
 
 func init() {
 	rootCmd.PersistentFlags().StringVarP(&ApiToken, "api-token", "a", "", "Webflow API Token")
-	rootCmd.MarkPersistentFlagRequired("api-token")
 }

@@ -102,7 +102,7 @@ type PublishSiteResponse struct {
 	Queued bool
 }
 
-// publishSitesCmd represents the command to get a site in Webflow.
+// publishSitesCmd represents the command to publish a site in Webflow.
 var publishSitesCmd = &cobra.Command{
 	Use:   "publish [site_id]",
 	Short: "publish a site",

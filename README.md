@@ -38,6 +38,7 @@ Use "webflowctl [command] --help" for more information about a command.
 - [x] List sites
 - [x] Get site
 - [x] Publish site
+- [x] List site domains
 
 ## Development
 

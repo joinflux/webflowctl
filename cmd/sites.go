@@ -13,6 +13,7 @@ import (
 
 func init() {
 	sitesCmd.AddCommand(getSitesCmd)
+	sitesCmd.AddCommand(listDomainsCmd)
 	sitesCmd.AddCommand(listSitesCmd)
 	sitesCmd.AddCommand(publishSitesCmd)
 	rootCmd.AddCommand(sitesCmd)
@@ -118,6 +119,40 @@ var publishSitesCmd = &cobra.Command{
 		err = json.Unmarshal(body, &response)
 		if err != nil {
 			log.Fatalf("Failed to unmarshal response body: %v", err)
+		}
+	},
+}
+
+type Domain struct {
+	Id   string `json:"_id"`
+	Name string
+}
+
+// ListDomainsResponse represents a response to the list domains request in Webflow.
+// See: https://developers.webflow.com/reference/list-domains
+type ListDomainsResponse []Domain
+
+// listDomainsCmd represents the command to list the domains for a site.
+var listDomainsCmd = &cobra.Command{
+	Use:   "domains [site_id]",
+	Short: "list a site's domains",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		siteId := args[0]
+		c := internal.NewClient(ApiToken)
+		body, err := c.Get([]string{"sites", siteId, "domains"})
+		if err != nil {
+			log.Fatalf("Request failed: %v", err)
+		}
+
+		var response ListDomainsResponse
+		err = json.Unmarshal(body, &response)
+		if err != nil {
+			log.Fatalf("Failed to unmarshal response body: %v", err)
+		}
+
+		for _, domain := range response {
+			fmt.Println(domain.Name)
 		}
 	},
 }

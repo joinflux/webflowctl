@@ -35,6 +35,9 @@ Use "webflowctl [command] --help" for more information about a command.
 - [x] Create webhook
 - [x] Delete webhook
 - [x] Get webhook
+- [x] List sites
+- [x] Get site
+- [x] Publish site
 
 ## Development
 

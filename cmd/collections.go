@@ -91,7 +91,7 @@ type GetCollectionResponse struct {
 // getCollectionCmd represents the command to get detailed info on a collection in Webflow
 var getCollectionCmd = &cobra.Command{
 	Use:   "get [collection_id]",
-	Short: "get details information for a collection",
+	Short: "get detailed information for a collection",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		collectionId := args[0]

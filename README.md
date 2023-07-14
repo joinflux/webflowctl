@@ -16,8 +16,10 @@ Usage:
   webflowctl [command]
 
 Available Commands:
+  collections Manage collections
   completion  Generate the autocompletion script for the specified shell
   help        Help about any command
+  sites       Manage sites
   webhooks    Manage webhooks
 
 Flags:
@@ -39,6 +41,8 @@ Use "webflowctl [command] --help" for more information about a command.
 - [x] Get site
 - [x] Publish site
 - [x] List site domains
+- [x] List collections
+- [x] Get a collection
 
 ## Development
 

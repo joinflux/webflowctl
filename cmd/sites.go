@@ -28,17 +28,19 @@ var sitesCmd = &cobra.Command{
 
 type Site struct {
 	CreatedOn     string
-	Id            string `json:"_id"`
+	Id            string
 	LastPublished string
-	Name          string
+	Name          string `json:"displayName"`
 	PreviewUrl    string
 	ShortName     string
-	Timezone      string
+	Timezone      string `json:"timeZone"`
 }
 
 // ListSitesResponse represents a response to the list sites request in Webflow.
 // See: https://developers.webflow.com/reference/list-sites
-type ListSitesResponse []Site
+type ListSitesResponse struct {
+	Sites []Site
+}
 
 // listSitesCmd represents the command to list sites in Webflow.
 var listSitesCmd = &cobra.Command{
@@ -56,9 +58,12 @@ var listSitesCmd = &cobra.Command{
 		if err != nil {
 			log.Fatalf("Failed to unmarshal response body: %v", err)
 		}
-		for _, site := range response {
-			fmt.Printf("%s\t%s\t%s\t%s\n", site.Name, site.Id, site.LastPublished, site.PreviewUrl)
+		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", "Name", "ID", "Last Published", "Preview URL")
+		for _, site := range response.Sites {
+			fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", site.Name, site.Id, site.LastPublished, site.PreviewUrl)
 		}
+		w.Flush()
 	},
 }
 
@@ -110,7 +115,7 @@ var publishSitesCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		siteId := args[0]
 		c := internal.NewClient(ApiToken)
-		body, err := c.Get([]string{"sites", siteId, "publish"})
+		body, err := c.Post([]string{"sites", siteId, "publish"}, nil)
 		if err != nil {
 			log.Fatalf("Request failed: %v", err)
 		}
@@ -124,13 +129,16 @@ var publishSitesCmd = &cobra.Command{
 }
 
 type Domain struct {
-	Id   string `json:"_id"`
-	Name string
+	Id            string
+	Url           string
+	LastPublished string
 }
 
 // ListDomainsResponse represents a response to the list domains request in Webflow.
 // See: https://developers.webflow.com/reference/list-domains
-type ListDomainsResponse []Domain
+type ListDomainsResponse struct {
+	CustomDomains []Domain `json:"custom_domains"`
+}
 
 // listDomainsCmd represents the command to list the domains for a site.
 var listDomainsCmd = &cobra.Command{
@@ -140,7 +148,7 @@ var listDomainsCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		siteId := args[0]
 		c := internal.NewClient(ApiToken)
-		body, err := c.Get([]string{"sites", siteId, "domains"})
+		body, err := c.Get([]string{"sites", siteId, "custom_domains"})
 		if err != nil {
 			log.Fatalf("Request failed: %v", err)
 		}
@@ -151,8 +159,8 @@ var listDomainsCmd = &cobra.Command{
 			log.Fatalf("Failed to unmarshal response body: %v", err)
 		}
 
-		for _, domain := range response {
-			fmt.Println(domain.Name)
+		for _, domain := range response.CustomDomains {
+			fmt.Println(domain.Url)
 		}
 	},
 }

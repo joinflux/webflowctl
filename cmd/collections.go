@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"reflect"
 	"text/tabwriter"
 
 	"github.com/joinflux/webflowctl/internal"
@@ -26,17 +25,19 @@ var collectionsCmd = &cobra.Command{
 }
 
 type Collection struct {
-	Id           string `json:"_id"`
+	Id           string
 	LastUpdated  string
 	CreatedOn    string
-	Name         string
+	Name         string `json:"displayName"`
 	Slug         string
 	SingularName string
 }
 
 // ListCollectionsResponse represents a response to the list collections request in Webflow.
 // See: https://developers.webflow.com/reference/list-collections
-type ListCollectionsResponse []Collection
+type ListCollectionsResponse struct {
+	Collections []Collection
+}
 
 // listCollectionsCmd represents the command to list all collections for a site in Webflow.
 var listCollectionsCmd = &cobra.Command{
@@ -60,14 +61,9 @@ var listCollectionsCmd = &cobra.Command{
 		}
 
 		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
-		for _, collection := range response {
-			v := reflect.ValueOf(collection)
-			for i := 0; i < v.NumField(); i++ {
-				name := v.Type().Field(i).Name
-				value := v.Field(i).Interface()
-				fmt.Fprintf(w, "%s:\t%s\n", name, value)
-			}
-			fmt.Fprint(w, "\n")
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", "ID", "Name", "Slug", "Last Updated")
+		for _, collection := range response.Collections {
+			fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", collection.Id, collection.Name, collection.Slug, collection.LastUpdated)
 		}
 		w.Flush()
 	},
@@ -78,13 +74,13 @@ var listCollectionsCmd = &cobra.Command{
 type GetCollectionResponse struct {
 	*Collection
 	Fields []struct {
-		Id       string
-		Slug     string
-		Name     string
-		Archived bool `json:"_archived"`
-		Draft    bool `json:"_draft"`
-		Editable bool
-		Required bool
+		DisplayName string
+		HelpText    string
+		Id          string
+		IsEditable  bool
+		IsRequired  bool
+		Slug        string
+		Type        string
 	}
 }
 
@@ -117,15 +113,9 @@ var getCollectionCmd = &cobra.Command{
 		fmt.Fprintf(w, "crated on:\t%v\n", response.CreatedOn)
 		fmt.Fprintf(w, "last updated:\t%v\n", response.LastUpdated)
 		fmt.Fprint(w, "\n\nFields:\n")
+		fmt.Fprint(w, "ID\tName\tSlug\tEditable\tRequired\tType\tHelp Text\n")
 		for _, val := range response.Fields {
-			fmt.Fprintf(w, "id:\t%s\n", val.Id)
-			fmt.Fprintf(w, "name:\t%s\n", val.Name)
-			fmt.Fprintf(w, "slug:\t%s\n", val.Slug)
-			fmt.Fprintf(w, "draft:\t%v\n", val.Draft)
-			fmt.Fprintf(w, "archived:\t%v\n", val.Archived)
-			fmt.Fprintf(w, "editable:\t%v\n", val.Editable)
-			fmt.Fprintf(w, "required:\t%v\n", val.Required)
-			fmt.Fprint(w, "\n")
+			fmt.Fprintf(w, "%v\t%v\t%v\t%v\t%v\t%v\t%v\n", val.Id, val.DisplayName, val.Slug, val.IsEditable, val.IsRequired, val.Type, val.HelpText)
 		}
 		fmt.Fprint(w, "\n")
 		w.Flush()

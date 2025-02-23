@@ -3,7 +3,6 @@ package internal
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"strings"
 )
@@ -18,7 +17,7 @@ type Client struct {
 // NewClient creates a webflow Client
 func NewClient(token string) *Client {
 	return &Client{
-		baseUrl:    "api.webflow.com",
+		baseUrl:    "api.webflow.com/v2",
 		token:      token,
 		httpClient: &http.Client{},
 	}
@@ -40,16 +39,19 @@ func (c Client) do(method string, endpoint []string, payload io.Reader) ([]byte,
 
 	resp, err := c.httpClient.Do(request)
 	if err != nil {
-		return nil, fmt.Errorf("Request Failed: %v", err)
+		return nil, fmt.Errorf("request Failed: %v", err)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("Failed to read response body: %v", err)
+		return nil, fmt.Errorf("failed to read response body: %v", err)
 	}
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("Request failed: %s\n%s", resp.Status, string(body))
+	// Dump body to terminal for troubleshooting
+	// fmt.Println(string(body))
+
+	if resp.StatusCode < http.StatusOK || resp.StatusCode > http.StatusNoContent {
+		return nil, fmt.Errorf("request failed: %s\n%s", resp.Status, string(body))
 	}
 
 	return body, nil

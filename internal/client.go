@@ -50,7 +50,7 @@ func (c Client) do(method string, endpoint []string, payload io.Reader) ([]byte,
 	// Dump body to terminal for troubleshooting
 	// fmt.Println(string(body))
 
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode < http.StatusOK || resp.StatusCode > http.StatusNoContent {
 		return nil, fmt.Errorf("request failed: %s\n%s", resp.Status, string(body))
 	}
 

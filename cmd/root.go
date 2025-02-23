@@ -12,13 +12,13 @@ var ApiToken string
 
 // Webhook represents a webhook in Webflow
 type Webhook struct {
-	CreatedOn   string
-	Id          string `json:"_id"`
-	LastUsed    string
-	Site        string
-	TriggerId   string
-	TriggerType string
-	Url         string
+	CreatedOn     string
+	Id            string
+	SiteId        string
+	TriggerType   string
+	LastTriggered string
+	Url           string
+	WorkspaceId   string
 }
 
 // rootCmd represents the base command when called without any subcommands
@@ -31,7 +31,7 @@ var rootCmd = &cobra.Command{
 		if flagValue == "" {
 			envValue := os.Getenv("WEBFLOW_API_TOKEN")
 			if envValue == "" {
-				return fmt.Errorf("Missing API Token: --api-token (-a) [WEBFLOW_API_TOKEN]")
+				return fmt.Errorf("missing API Token: --api-token (-a) [WEBFLOW_API_TOKEN]")
 			}
 			ApiToken = envValue
 		}

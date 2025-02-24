@@ -1,14 +1,16 @@
 # Webflow Command Line Utility
 
-Webflowctl is a command line utility to manage Webflow site configurations. It is being used specifically to manage webhooks.
+Webflowctl is a command line utility to manage Webflow site configurations. It
+is being used specifically to manage webhooks.
 
 ## Installation
 
-Download a binary from the [Release](https://github.com/joinflux/webflowctl/releases) page.
+Download a binary from the
+[Release](https://github.com/joinflux/webflowctl/releases) page.
 
 ## Usage
 
-```
+```zsh
 ❯ ./webflowctl
 A tool to help manage webhooks in the Webflow API
 
@@ -29,7 +31,16 @@ Flags:
 Use "webflowctl [command] --help" for more information about a command.
 ```
 
-> Tip: set `WEBFLOW_API_TOKEN` environment variable to bypass needing to fill in the `--api-token` flag.
+> Tip: set `WEBFLOW_API_TOKEN` environment variable to bypass needing to fill
+> in the `--api-token` flag.
+
+### Command Line Completion
+
+`webflowctl` can generate shell completion scripts.
+
+```zsh
+webflowctl completion zsh > ~/.zsh/completions/_webflowctl.zsh
+```
 
 ## Available Commands
 
@@ -46,4 +57,5 @@ Use "webflowctl [command] --help" for more information about a command.
 
 ## Development
 
-This tool was created with [Cobra CLI](https://cobra.dev/) so please make sure to leverage it when adding new functionality.
+This tool was created with [Cobra CLI](https://cobra.dev/) so please make sure
+to leverage it when adding new functionality.

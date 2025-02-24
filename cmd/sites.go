@@ -27,13 +27,13 @@ var sitesCmd = &cobra.Command{
 }
 
 type Site struct {
-	CreatedOn     string
-	Id            string
-	LastPublished string
-	Name          string `json:"displayName"`
-	PreviewUrl    string
-	ShortName     string
-	Timezone      string `json:"timeZone"`
+	CreatedOn   string
+	Id          string
+	LastUpdated string
+	Name        string `json:"displayName"`
+	PreviewUrl  string
+	ShortName   string
+	Timezone    string `json:"timeZone"`
 }
 
 // ListSitesResponse represents a response to the list sites request in Webflow.
@@ -59,9 +59,9 @@ var listSitesCmd = &cobra.Command{
 			log.Fatalf("Failed to unmarshal response body: %v", err)
 		}
 		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
-		fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", "Name", "ID", "Last Published", "Preview URL")
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", "Name", "ID", "Last Updated", "Preview URL")
 		for _, site := range response.Sites {
-			fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", site.Name, site.Id, site.LastPublished, site.PreviewUrl)
+			fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", site.Name, site.Id, site.LastUpdated, site.PreviewUrl)
 		}
 		w.Flush()
 	},
@@ -93,7 +93,7 @@ var getSitesCmd = &cobra.Command{
 		fmt.Fprintf(w, "name:\t%s\n", response.Name)
 		fmt.Fprintf(w, "id:\t%s\n", response.Id)
 		fmt.Fprintf(w, "created on:\t%s\n", response.CreatedOn)
-		fmt.Fprintf(w, "last published:\t%s\n", response.LastPublished)
+		fmt.Fprintf(w, "last updated:\t%s\n", response.LastUpdated)
 		fmt.Fprintf(w, "preview url:\t%s\n", response.PreviewUrl)
 		fmt.Fprintf(w, "short name:\t%s\n", response.ShortName)
 		fmt.Fprintf(w, "timezone:\t%s\n", response.Timezone)

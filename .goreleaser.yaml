@@ -1,3 +1,4 @@
+version: 2
 before:
   hooks:
     # You may remove this if you don't use go modules.
@@ -11,7 +12,7 @@ builds:
       - darwin
 
 archives:
-  - format: tar.gz
+  - formats: ["tar.gz"]
     # this name template makes the OS and Arch compatible with the results of uname.
     name_template: >-
       {{ .ProjectName }}_
@@ -22,18 +23,17 @@ archives:
       {{- if .Arm }}v{{ .Arm }}{{ end }}
     # use zip for windows archives
     format_overrides:
-    - goos: windows
-      format: zip
+      - goos: windows
+        formats: ["zip"]
 checksum:
-  name_template: 'checksums.txt'
+  name_template: "checksums.txt"
 snapshot:
-  name_template: "{{ incpatch .Version }}-next"
+  version_template: "{{ incpatch .Version }}-next"
 changelog:
   sort: asc
   filters:
     exclude:
-      - '^docs:'
-      - '^test:'
-
+      - "^docs:"
+      - "^test:"
 # yaml-language-server: $schema=https://goreleaser.com/static/schema.json
 # vim: set ts=2 sw=2 tw=0 fo=cnqoj

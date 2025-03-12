@@ -137,7 +137,7 @@ type Domain struct {
 // ListDomainsResponse represents a response to the list domains request in Webflow.
 // See: https://developers.webflow.com/reference/list-domains
 type ListDomainsResponse struct {
-	CustomDomains []Domain `json:"custom_domains"`
+	CustomDomains []Domain
 }
 
 // listDomainsCmd represents the command to list the domains for a site.
@@ -159,8 +159,10 @@ var listDomainsCmd = &cobra.Command{
 			log.Fatalf("Failed to unmarshal response body: %v", err)
 		}
 
+		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
 		for _, domain := range response.CustomDomains {
-			fmt.Println(domain.Url)
+			fmt.Fprintln(w, domain.Id, domain.Url)
 		}
+		w.Flush()
 	},
 }
